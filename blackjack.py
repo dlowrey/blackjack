@@ -29,7 +29,7 @@ def draw_random():
     value = DECK[face]
     return (face, value) # return tuple representing the card
 
-def count_value(cards):
+def total_hand(cards):
     """ Return the sum of all cards in a list """
     return sum(card[1] for card in cards)
 
@@ -38,17 +38,13 @@ def determine_aces(cards):
         You only want an ACE to be valued at 11 if the current
         value of your hand is <= 11 with that ACE valued at 1
     """
-    c_total = count_value(cards)
-    print(cards)
+    c_total = total_hand(cards)
     if 'A' in [c[0] for c in cards] and c_total <= 11:  # is there an ACE and are we <= 11
         for i in range(0, len(cards)):  # find the ACE, change its value from 1 to 11                  
             face = cards[i][0]
             if face is 'A':
-                print('changin ace')
                 cards[i] = (face, 11) # change the ace value to 11
                 break
-        print('returnin from det')
-        print(cards)
         return cards # returned modified cards
     else:
         return cards # return unmodified cards (no aces found)
@@ -65,26 +61,26 @@ def run():
     print('The dealer delt you two cards, ' + player[0][0] + ' and ' + player[1][0]) # print dealer first card
 
     # player plays
-    player_total = count_value(player)
+    player_total = total_hand(player)
     while player_total <= 21: # allow player to keep drawing
         hit = True if input('Hit? (Y/N): ') is 'Y' else False
         if hit:
             face, value = draw_random()
             print('You drew: ' + face)
             player.append((face, value)) # put the card in a tuple and append
-            player_total = count_value(player) # new total
-            print('Your cards are {} for a total of {}'.format(str([card[0] for card in player]), str(player_total)))
+            player_total = total_hand(player) # new total
+            print('Your cards are {}'.format(str([card[0] for card in player])))
         else:
             break # chose not to hit
 
     # determine player final hand
     player = determine_aces(player)
-    player_total = count_value(player)
+    player_total = total_hand(player)
     print('Your final cards are {} for a total of {}'.format(str([card[0] for card in player]), str(player_total)))
 
     # dealer Plays
-    dealer_total = count_value(dealer)
-    print('Dealer cards are {} for a total of {}'.format(str([card[0] for card in dealer]), str(dealer_total)))
+    dealer_total = total_hand(dealer)
+    print('Dealer cards are {}'.format(str([card[0] for card in dealer])))
     while dealer_total < 21: # dealer stops at 21
         time.sleep(1) # pause for a little suspense
         if dealer_total == 16 or (dealer_total < player_total and player_total <= 21):
@@ -94,8 +90,8 @@ def run():
             print('Dealer drew: ' + face)
             dealer.append((face, value))
             dealer = determine_aces(dealer)
-            dealer_total = count_value(dealer)
-            print('Dealer cards are {} for a total of {}'.format(str([card[0] for card in dealer]), str(dealer_total)))
+            dealer_total = total_hand(dealer)
+            print('Dealer cards are {}'.format(str([card[0] for card in dealer])))
         elif dealer_total == 17:
             print('Dealer has to stay')
             break # has to stay
